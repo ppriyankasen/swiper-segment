@@ -1,0 +1,6 @@
+<ion-item mode="ios" (click)="handleItemToggle()">
+  <ion-label class="cove">Expand Item 1</ion-label>
+</ion-item>
+<div *ngIf="isExpanded">
+  <ng-content></ng-content>
+</div>
