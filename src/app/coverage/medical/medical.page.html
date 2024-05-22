@@ -22,9 +22,15 @@
   <swiper-container auto-height="true" #swiper [modules]="swiperModules"
     (slidechangetransitionstart)="slideChange()"
     (slidechangetransitionend)="slideChangeCompleted()">
-    
+
     <swiper-slide>
       Silde 1
+      <ion-item (click)="handleClick()">
+      Click  Here!
+      </ion-item>
+      <ion-item *ngIf="itemClicked">
+        clicked
+      </ion-item>
     </swiper-slide>
 
     <swiper-slide>

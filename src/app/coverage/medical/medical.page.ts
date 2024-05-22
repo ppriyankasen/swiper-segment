@@ -1,4 +1,4 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { IonicSlides } from '@ionic/angular';
 
 @Component({
@@ -6,12 +6,12 @@ import { IonicSlides } from '@ionic/angular';
   templateUrl: './medical.page.html',
   styleUrls: ['./medical.page.scss'],
 })
-export class MedicalPage implements OnInit {
+export class MedicalPage implements OnInit, AfterViewChecked {
 
-  @ViewChild('swiper')
   public swiperModules = [IonicSlides];
   public hasSlideChanged = 0;
   public selectedTab = 0;
+  public itemClicked = false;
   public tabList = [
     {
       id: 'slide1',
@@ -70,6 +70,22 @@ export class MedicalPage implements OnInit {
     this.selectedTab = 0;
   }
 
+  ngAfterViewChecked(): void {
+    if (this.elementRef.nativeElement.querySelector('swiper-container')) {
+      setTimeout(() => {
+        const wrapperListEl = this.elementRef.nativeElement.querySelector('.swiper-slide-active');
+        const ionContentHeight = this.elementRef.nativeElement.querySelector('ion-content').offsetHeight;
+        const wrapperListHeight = this.tabList[this.selectedTab]?.id === 'slide1' ?
+          wrapperListEl?.offsetHeight + 'px' : wrapperListEl?.offsetHeight + 20 + 'px';
+        this.elementRef.nativeElement.querySelector('swiper-container').style.height = wrapperListHeight;
+        this.elementRef.nativeElement.querySelector('swiper-container').style.minHeight = ionContentHeight + 'px';
+        // able to reproduce the issue when we have console.log, able to reproduce on both 5.0.5 anf 5.7.5
+        console.log('ionContentHeight', ionContentHeight);
+        console.log('ionContentHeight', wrapperListHeight);
+      });
+    }
+  }
+
   segmentChange(event: any) {
     let value = event.detail.value;
     if (value) {
@@ -114,6 +130,11 @@ export class MedicalPage implements OnInit {
     // this.zone.run(() => {
     //   this.hasSlideChanged = 2;
     // });
+  }
+
+  handleClick() {
+    console.log('Hi there');
+    this.itemClicked = !this.itemClicked;
   }
 
 }
